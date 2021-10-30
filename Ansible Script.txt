@@ -1,0 +1,82 @@
+
+ 
+Ansible Configuration 
+on AWS Console launch the AnsibleServer, node1, node2
+after that connect to terminals all
+
+
+#####On Server machine#######
+$ sudo su
+$ cd
+$ wget https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+$ ll
+$ yum install epel...............  
+$ yum update -y
+$ yum install git python python-level python-pip openssl ansible -y
+$ vi /etc/ansible/hosts
+    [demo]
+     node1 private ip
+     node2 private ip
+$ vi /etc/ansible/ansible cfg
+   uncomment it
+   #inventory = /etc/ansible/ansible cfg
+   #sudo-user = root
+
+#### Addusers and make sudo on server and nodes alsp######
+$ adduser ansible
+$ passwd ansible
+$ visudo
+    root	ALL=(ALL)	ALL
+    ansible	ALL=(ALL)	NOPASSWD:ALL
+
+$ su - ansible
+Now try any package to install Ex. httpd
+$ sudo yum install httpd
+
+
+#####SSH Configuration on all machine###
+$ sudo vi /etc/ssh/sshd_config
+   uncomments it
+   #permit root login yes
+   #password Authentication yes
+    
+    comments it
+    password Authentication no
+$ sudo service sshd restart
+
+
+####On Server machine Keyless Authentication#####
+$ ssh-keygen
+$ ls -a
+$ cd .ssh
+$ ls
+ 
+copy key to nodes
+
+$ ssh-copy-id ansible@<publicipnode>
+
+now we are able to keyless login to node
+
+####DONE#####
+
+
+####Commands#####
+$ ansible all --list-hosts
+$ ansible <groupname> --list-hosts
+$ ansible <groupname>[0] --list-hosts
+
+
+<groupname>[0] = picks first machine of group
+<groupname>[1] = pics 2nd machine of group 
+<groupname>[2] = picks 3rd machine of group
+<groupname>[-1] = pick last machine of group
+<groupname>[2:4] = picks 2,3,4,of machine 
+
+
+Ad-hoc Commands 
+$ ansible <groupname> -a "ls"
+$ ansible <groupname>[0] -a "touch file1"
+$ ansible all -a "touch file2"
+$ ansible <groupname> -a "ls -la"
+$ ansible <groupname> -a "sudo yum install httpd -y"
+
